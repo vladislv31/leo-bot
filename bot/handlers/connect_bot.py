@@ -4,12 +4,22 @@ from config import configs
 from bot.keyboards import make_keyboard
 from bot import keyboards
 from bot import settings
+from bot.database import Db
 
 
 @bot.message_handler(func=lambda m: m.text == 'Подключить бота')
 def connect_bot(m):
     cid = m.chat.id
-    msg = bot.send_message(cid, messages.choose_config, reply_markup=make_keyboard([configs]))
+    db = Db()
+    configs = db.get_free_configs()
+    db.close()
+    
+    reply = ''
+
+    for i in configs:
+        reply += f'{i["id"]} - {i["title"]} - {i["descr"]}\n'
+
+    msg = bot.send_message(cid, messages.choose_config + '\n\n' + reply, reply_markup=keyboards.hide)
     bot.register_next_step_handler(msg, choose_config)
 
 
@@ -48,8 +58,26 @@ def enter_base_size(m, data):
 
     data['base_size'] = base_size
 
-    bot.send_message(cid, settings.add_command.format('123', data['id_key'], data['base_size'], data['config'], data['secret_key']))
+    msg = bot.send_message(cid, messages.check_data, reply_markup=keyboards.check_data)
+    bot.register_next_step_handler(msg, check_connect_data, data)
 
+    #bot.send_message(cid, settings.add_command.format('123', data['id_key'], data['base_size'], data['config'], data['secret_key']))
+
+def check_connect_data(m, data):
+    cid = m.chat.id
+    text = m.text
+
+    if text == 'Сохранить':
+        db = Db()
+
+        user_id = db.get_user_id(cid)
+        db.connect_config(user_id, data['config'])
+
+        db.close()
+
+        bot.send_message(cid, messages.start, reply_markup=keyboards.main)
+    else:
+        bot.send_message(cid, messages.start, reply_markup=keyboards.main)
 
 
 

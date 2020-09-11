@@ -13,4 +13,6 @@ def make_keyboard(rows):
 main = make_keyboard([['Подключить бота', 'Управление ботом', 'Старт/Стоп']])
 manage = make_keyboard([['Размер контрактов', 'Назад']])
 contract_sizes = make_keyboard([['20', '100', '500']])
+admin = make_keyboard([['Список свободных конфигов'], ['Добавить конфиг', 'Назад']])
+check_data = make_keyboard([['Сохранить', 'Назад']])
 hide = types.ReplyKeyboardRemove()
