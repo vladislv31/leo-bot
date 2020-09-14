@@ -19,13 +19,20 @@ def connect_bot(m):
     for i in configs:
         reply += f'{i["id"]} - {i["title"]} - {i["descr"]}\n'
 
-    msg = bot.send_message(cid, messages.choose_config + '\n\n' + reply, reply_markup=keyboards.hide)
+    if len(configs) < 1:
+        reply += 'Пусто...'
+
+    msg = bot.send_message(cid, messages.choose_config + '\n\n' + reply, reply_markup=make_keyboard([['Отмена']]))
     bot.register_next_step_handler(msg, choose_config)
 
 
 def choose_config(m):
     cid = m.chat.id
     config = m.text
+
+    if config == 'Отмена':
+        bot.send_message(cid, messages.start, reply_markup=keyboards.main)
+        return
 
     data = {}
     data['config'] = config
@@ -70,12 +77,18 @@ def check_connect_data(m, data):
     if text == 'Сохранить':
         db = Db()
 
-        user_id = db.get_user_id(cid)
-        db.connect_config(user_id, data['config'])
+        if db.check_config(data['config']):
+            user_id = db.get_user_id(cid)
+            config = db.get_config(data['config'])
+            db.connect_config(user_id, data['config'])
+            bot.send_message(cid, messages.connect_success)
+            bot.send_message(cid, 'PIN-код для конфига - ' + str(config['pin']), reply_markup=keyboards.main)
+            bot.send_message(cid, settings.add_command.format(config['pin'], data['id_key'], data['base_size'], config['title'], data['secret_key']))
+        else:
+            bot.send_message(cid, messages.config_not_exists, keyboards.main)
 
         db.close()
 
-        bot.send_message(cid, messages.start, reply_markup=keyboards.main)
     else:
         bot.send_message(cid, messages.start, reply_markup=keyboards.main)
 

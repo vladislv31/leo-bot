@@ -38,6 +38,21 @@ class Db:
             return False
         return True
 
+    def check_config(self, config_id):
+        configs = self.query('select * from configs where not exists(select * from used_configs where used_configs.config_id = configs.id) and id = %s', (config_id,))
+        if len(configs) < 1:
+            return False
+
+        return True
+
+    def get_config(self, config_id):
+        config = self.query('select * from configs where not exists(select * from used_configs where used_configs.config_id = configs.id) and id = %s', (config_id,))
+        if len(config) < 1:
+            return False
+        return config[0]
+        
+
+
     def new_config(self, title, descr, pin):
         if not self.check_pin(pin):
             self.query('INSERT INTO configs(title, descr, pin) VALUES(%s, %s, %s)', (title, descr, int(pin)))
