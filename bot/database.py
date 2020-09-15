@@ -36,7 +36,7 @@ class Db:
         configs = self.query('SELECT * FROM configs WHERE pin = %s', (int(pin),))
         if len(configs) < 1:
             return False
-        return True
+        return configs[0]['id']
 
     def check_config(self, config_id):
         configs = self.query('select * from configs where not exists(select * from used_configs where used_configs.config_id = configs.id) and id = %s', (config_id,))
@@ -62,6 +62,12 @@ class Db:
     def get_free_configs(self):
         configs = self.query('select * from configs where not exists(select * from used_configs where used_configs.config_id = configs.id)')
         return configs
+
+    def get_used_config(self, user_id, config_id):
+        configs = self.query('SELECT * FROM used_configs WHERE user_id = %s AND config_id = %s', (user_id, config_id))
+        if len(configs) < 1:
+            return False
+        return True
 
     def connect_config(self, user_id, config_id):
         self.query('INSERT INTO used_configs(user_id, config_id) VALUES(%s, %s)', (user_id, config_id))

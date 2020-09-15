@@ -2,13 +2,13 @@ from bot import bot
 from bot import messages
 from bot import keyboards
 from bot.database import Db
-from config import ADMIN_ID
+from config import ADMIN_IDS
 
 
 def check_id(func):
     def wrapper(m):
         cid = m.chat.id
-        if cid != ADMIN_ID:
+        if cid not in ADMIN_IDS:
             from bot.handlers.general import start
             start(m)
             return
