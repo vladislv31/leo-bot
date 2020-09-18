@@ -66,7 +66,13 @@ def enter_base_size(m, data):
 
     data['base_size'] = base_size
 
-    msg = bot.send_message(cid, messages.check_data, reply_markup=keyboards.check_data)
+    db = Db()
+    config = db.get_config(data['config'])
+    db.close()
+
+    reply = f'\n\nКонфиг: {config["title"]}\nID ключ: {data["id_key"]}\nSecret: {data["secret_key"]}\nБазовый размер контракта: {data["base_size"]}'
+
+    msg = bot.send_message(cid, messages.check_data + reply, reply_markup=keyboards.check_data)
     bot.register_next_step_handler(msg, check_connect_data, data)
 
     #bot.send_message(cid, settings.add_command.format('123', data['id_key'], data['base_size'], data['config'], data['secret_key']))
