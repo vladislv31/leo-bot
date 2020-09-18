@@ -5,6 +5,7 @@ from bot import keyboards
 from bot.keyboards import make_keyboard
 from bot.database import Db
 from bot import settings
+from bot.funcs import send_command
 
 
 @bot.message_handler(func=lambda m: m.text == 'Управление ботом')
@@ -60,7 +61,9 @@ def new_contract(m, pin):
     new_contract = m.text
 
     bot.send_message(cid, 'Контракт изменен!', reply_markup=keyboards.main)
-    bot.send_message(cid, settings.change_command.format(pin, new_contract))
+    command = settings.change_command.format(pin, new_contract)
+    #send_command(command)
+    bot.send_message(cid, command)
 
 
 

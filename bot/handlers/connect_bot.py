@@ -5,6 +5,7 @@ from bot.keyboards import make_keyboard
 from bot import keyboards
 from bot import settings
 from bot.database import Db
+from bot.funcs import send_command
 
 
 @bot.message_handler(func=lambda m: m.text == 'Подключить бота')
@@ -83,7 +84,9 @@ def check_connect_data(m, data):
             db.connect_config(user_id, data['config'])
             bot.send_message(cid, messages.connect_success)
             bot.send_message(cid, 'PIN-код для конфига - ' + str(config['pin']), reply_markup=keyboards.main)
-            bot.send_message(cid, settings.add_command.format(config['pin'], data['id_key'], data['base_size'], config['title'], data['secret_key']))
+            command = settings.add_command.format(config['pin'], data['id_key'], data['base_size'], config['title'], data['secret_key'])
+            #send_command(command)
+            bot.send_message(cid, command)
         else:
             bot.send_message(cid, messages.config_not_exists, keyboards.main)
 

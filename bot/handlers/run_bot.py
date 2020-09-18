@@ -5,6 +5,7 @@ from bot import keyboards
 from bot.keyboards import make_keyboard
 from bot.database import Db
 from bot import settings
+from bot.funcs import send_command
 
 
 @bot.message_handler(func=lambda m: m.text == 'Старт/Стоп')
@@ -48,6 +49,7 @@ def run_menu(m, pin):
     if text in run_commands.keys():
         command = str(pin) + run_commands[text]
         bot.send_message(cid, 'Команда успешно выполнена', reply_markup=keyboards.main)
+        #send_command(command)
         bot.send_message(cid, command)
     else:
         bot.send_message(cid, messages.start, reply_markup=keyboards.main)
