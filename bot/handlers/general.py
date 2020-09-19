@@ -7,6 +7,8 @@ from bot.database import Db
 @bot.message_handler(commands=['start', 'help'])
 @bot.message_handler(func=lambda m: m.text == 'Назад')
 def start(m):
+    with open('test.txt', 'w') as f:
+        f.write('start')
     cid = m.chat.id
     username = m.from_user.username
 

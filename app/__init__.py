@@ -14,7 +14,7 @@ import config
 API_TOKEN = config.TOKEN
 
 WEBHOOK_HOST = '94.103.88.55'
-WEBHOOK_PORT = 8443  # 443, 80, 88 or 8443 (port need to be 'open')
+WEBHOOK_PORT = 443  # 443, 80, 88 or 8443 (port need to be 'open')
 WEBHOOK_LISTEN = '0.0.0.0'  # In some VPS you may need to put here the IP addr
 
 WEBHOOK_SSL_CERT = 'ssl/webhook_cert.pem'  # Path to the ssl certificate
@@ -37,7 +37,7 @@ app = flask.Flask(__name__)
 # Empty webserver index, return nothing, just http 200
 @app.route('/', methods=['GET', 'HEAD'])
 def index():
-    return ''
+    return WEBHOOK_URL_BASE + WEBHOOK_URL_PATH
 
 
 # Process webhook calls
@@ -45,23 +45,24 @@ def index():
 def webhook():
     if flask.request.headers.get('content-type') == 'application/json':
         json_string = flask.request.get_data().decode('utf-8')
+        with open('test.txt', 'w') as f:
+            f.write(json_string)
         update = telebot.types.Update.de_json(json_string)
         bot.process_new_updates([update])
         return ''
     else:
         flask.abort(403)
 
+time.sleep(1)
+
 # Remove webhook, it fails sometimes the set if there is a previous webhook
 bot.remove_webhook()
 
-time.sleep(1.3)
+time.sleep(1.5)
 
 # Set webhook
 bot.set_webhook(url=WEBHOOK_URL_BASE + WEBHOOK_URL_PATH,
                 certificate=open(WEBHOOK_SSL_CERT, 'r'))
 
 # Start flask server
-app.run(host=WEBHOOK_LISTEN,
-        port=WEBHOOK_PORT,
-        ssl_context=(WEBHOOK_SSL_CERT, WEBHOOK_SSL_PRIV),
-        debug=True)
+#app.run(host=WEBHOOK_LISTEN, port=WEBHOOK_PORT, ssl_context=(WEBHOOK_SSL_CERT, WEBHOOK_SSL_PRIV), debug=True)
