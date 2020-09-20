@@ -51,8 +51,17 @@ def config_name(m):
     data = {}
     data['name'] = name
 
+    msg = bot.send_message(cid, messages.enter_config_tool)
+    bot.register_next_step_handler(msg, config_tool, data)
+
+def config_tool(m, data):
+    cid = m.chat.id
+    tool = m.text
+
+    data['tool'] = tool
+
     msg = bot.send_message(cid, messages.enter_config_descr)
-    bot.register_next_step_handler(msg, config_descr, data)
+    bot.register_next_step_handler(msg, config_descr, data)   
 
 def config_descr(m, data):
     cid = m.chat.id
@@ -69,7 +78,7 @@ def config_pin(m, data):
 
     data['pin'] = pin
 
-    reply = f'Название: {data["name"]}\nОписание: {data["descr"]}\nPIN: {data["pin"]}'
+    reply = f'Название: {data["name"]}\nОписание: {data["descr"]}\nPIN: {data["pin"]}\nИнструмент: {data["tool"]}'
 
     msg = bot.send_message(cid, messages.check_data + '\n\n' + reply, reply_markup=keyboards.check_data)
     bot.register_next_step_handler(msg, check_config_data, data)
@@ -80,7 +89,7 @@ def check_config_data(m, data):
 
     if text == 'Сохранить':
         db = Db()
-        new_conf = db.new_config(data['name'], data['descr'], data['pin'])
+        new_conf = db.new_config(data['name'], data['descr'], data['pin'], data['tool'])
         if not new_conf is True:
             bot.send_message(cid, new_conf, reply_markup=keyboards.admin)
         else:

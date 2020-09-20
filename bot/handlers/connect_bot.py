@@ -90,7 +90,7 @@ def check_connect_data(m, data):
             db.connect_config(user_id, data['config'])
             bot.send_message(cid, messages.connect_success)
             bot.send_message(cid, 'PIN-код для конфига - ' + str(config['pin']), reply_markup=keyboards.main)
-            command = settings.add_command.format(config['pin'], data['id_key'], data['base_size'], config['title'], data['secret_key'])
+            command = settings.add_command.format(config['pin'], data['id_key'], config['tool'], data['base_size'], config['title'], data['secret_key'])
             #send_command(command)
             bot.send_message(cid, command)
         else:

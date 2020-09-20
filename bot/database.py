@@ -53,9 +53,9 @@ class Db:
         
 
 
-    def new_config(self, title, descr, pin):
+    def new_config(self, title, descr, pin, tool):
         if not self.check_pin(pin):
-            self.query('INSERT INTO configs(title, descr, pin) VALUES(%s, %s, %s)', (title, descr, int(pin)))
+            self.query('INSERT INTO configs(title, descr, pin, tool) VALUES(%s, %s, %s, %s)', (title, descr, int(pin), tool))
             return True
         return 'PIN-код уже занят'
 
