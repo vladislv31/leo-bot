@@ -28,7 +28,8 @@ CREATE TABLE public.configs (
     id integer NOT NULL,
     title character varying(50),
     descr text,
-    pin integer
+    pin integer,
+    tool character varying(50)
 );
 
 
@@ -151,12 +152,17 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 -- Data for Name: configs; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
-COPY public.configs (id, title, descr, pin) FROM stdin;
-1	asdasd	asdasd	12345
-2	asdasddsa	asddasadsasd	12344
-3	asdsadsaddas	sadsadasdasd	11111
-4	config name	asdasddassdasaddas	45678
-5	Scalper	работает быстро и метко	10101
+COPY public.configs (id, title, descr, pin, tool) FROM stdin;
+1	asdasd	asdasd	12345	xbtusd
+2	asdasddsa	asddasadsasd	12344	xbtusd
+3	asdsadsaddas	sadsadasdasd	11111	xbtusd
+4	config name	asdasddassdasaddas	45678	xbtusd
+5	Scalper	работает быстро и метко	10101	xbtusd
+6	Название конфы	описание	75368	xbtusd
+7	test	test	22222	xbtusd
+8	Signal_5m	Сигнальный на таймфреймах 5 минут	10300	xbtusd
+9	Signal_5m	Сигнальный на таймфреймах 5 минут	10301	xbtusd
+10	Прикольный	descr	99999	xbtusd
 \.
 
 
@@ -170,6 +176,10 @@ COPY public.used_configs (id, config_id, user_id) FROM stdin;
 3	1	8
 4	4	8
 5	5	9
+6	6	8
+7	7	8
+8	9	9
+9	8	8
 \.
 
 
@@ -187,14 +197,14 @@ COPY public.users (id, chat_id, username) FROM stdin;
 -- Name: configs_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.configs_id_seq', 5, true);
+SELECT pg_catalog.setval('public.configs_id_seq', 10, true);
 
 
 --
 -- Name: used_configs_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public.used_configs_id_seq', 5, true);
+SELECT pg_catalog.setval('public.used_configs_id_seq', 9, true);
 
 
 --
